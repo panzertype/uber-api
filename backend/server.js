@@ -9,6 +9,7 @@ const loadsRouter = require('./routes/loadsRoutes');
 const trucksRouter = require('./routes/trucksRoutes');
 const usersRouter = require('./routes/usersRoutes');
 
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use('/api/auth', authRouter);
