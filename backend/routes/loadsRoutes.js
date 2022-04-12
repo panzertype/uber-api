@@ -1,40 +1,33 @@
 const express = require('express');
 const router = express.Router();
+const {
+  getUserLoads,
+  addUserLoad,
+  getUserActiveLoad,
+  iterateNextLoadState,
+  getUserLoadById,
+  updateUserLoadById,
+  deleteUserLoadById,
+  postUserLoadById,
+  getUserLoadShippingInfoById,
+} = require('../routes/loadsRoutes');
 
-router.get('/', (req, res) => {
-  res.status(200).json({ message: 'Success' });
-});
+router.get('/', getUserLoads);
 
-router.post('/', (req, res) => {
-  res.status(200).json({ message: 'Success' });
-});
+router.post('/', addUserLoad);
 
-router.get('/active', (req, res) => {
-  res.status(200).json({ message: 'Success' });
-});
+router.get('/active', getUserActiveLoad);
 
-router.patch('/active/state', (req, res) => {
-  res.status(200).json({ message: 'Success' });
-});
+router.patch('/active/state', iterateNextLoadState);
 
-router.get('/:id', (req, res) => {
-  res.status(200).json({ message: 'Success' });
-});
+router.get('/:id', getUserLoadById);
 
-router.put('/:id', (req, res) => {
-  res.status(200).json({ message: 'Success' });
-});
+router.put('/:id', updateUserLoadById);
 
-router.delete('/:id', (req, res) => {
-  res.status(200).json({ message: 'Success' });
-});
+router.delete('/:id', deleteUserLoadById);
 
-router.post('/:id/post', (req, res) => {
-  res.status(200).json({ message: 'Success' });
-});
+router.post('/:id/post', postUserLoadById);
 
-router.get('/:id/shipping_info', (req, res) => {
-  res.status(200).json({ message: 'Success' });
-});
+router.get('/:id/shipping_info', getUserLoadShippingInfoById);
 
 module.exports = router;

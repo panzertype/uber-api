@@ -1,28 +1,24 @@
 const express = require('express');
 const router = express.Router();
+const {
+  getUserTrucks,
+  addUserTruck,
+  getUserTruckById,
+  updateUserTruckById,
+  deleteUserTruckById,
+  assignUserTruckById,
+} = require('../routes/trucksRoutes');
 
-router.get('/', (req, res) => {
-  res.status(200).json({ message: 'Success' });
-});
+router.get('/', getUserTrucks);
 
-router.post('/', (req, res) => {
-  res.status(200).json({ message: 'Success' });
-});
+router.post('/', addUserTruck);
 
-router.get('/:id', (req, res) => {
-  res.status(200).json({ message: 'Success' });
-});
+router.get('/:id', getUserTruckById);
 
-router.put('/:id', (req, res) => {
-  res.status(200).json({ message: 'Success' });
-});
+router.put('/:id', updateUserTruckById);
 
-router.delete('/:id', (req, res) => {
-  res.status(200).json({ message: 'Success' });
-});
+router.delete('/:id', deleteUserTruckById);
 
-router.post('/:id/assign', (req, res) => {
-  res.status(200).json({ message: 'Success' });
-});
+router.post('/:id/assign', assignUserTruckById);
 
 module.exports = router;

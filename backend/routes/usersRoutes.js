@@ -1,16 +1,15 @@
 const express = require('express');
 const router = express.Router();
+const {
+  getProfileInfo,
+  deleteProfile,
+  changePassword,
+} = require('../routes/usersRoutes');
 
-router.get('/', (req, res) => {
-  res.status(200).json({ message: 'Success' });
-});
+router.get('/', getProfileInfo);
 
-router.delete('/', (req, res) => {
-  res.status(200).json({ message: 'Success' });
-});
+router.delete('/', deleteProfile);
 
-router.patch('/password', (req, res) => {
-  res.status(200).json({ message: 'Success' });
-});
+router.patch('/password', changePassword);
 
 module.exports = router;
