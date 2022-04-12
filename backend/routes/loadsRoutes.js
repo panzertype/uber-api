@@ -10,7 +10,7 @@ const {
   deleteUserLoadById,
   postUserLoadById,
   getUserLoadShippingInfoById,
-} = require('../routes/loadsRoutes');
+} = require('../controllers/loadsController');
 
 router.get('/', getUserLoads);
 

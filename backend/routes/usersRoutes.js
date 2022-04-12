@@ -4,7 +4,7 @@ const {
   getProfileInfo,
   deleteProfile,
   changePassword,
-} = require('../routes/usersRoutes');
+} = require('../controllers/usersController');
 
 router.get('/', getProfileInfo);
 

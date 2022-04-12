@@ -7,7 +7,7 @@ const {
   updateUserTruckById,
   deleteUserTruckById,
   assignUserTruckById,
-} = require('../routes/trucksRoutes');
+} = require('../controllers/trucksController');
 
 router.get('/', getUserTrucks);
 
