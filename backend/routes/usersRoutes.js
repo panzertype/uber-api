@@ -1,10 +1,11 @@
 const express = require('express');
+// eslint-disable-next-line new-cap
 const router = express.Router();
 const {
   getProfileInfo,
   deleteProfile,
   changePassword,
-} = require('../routes/usersRoutes');
+} = require('../controllers/usersController');
 
 router.get('/', getProfileInfo);
 

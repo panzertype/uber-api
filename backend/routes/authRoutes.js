@@ -1,6 +1,11 @@
 const express = require('express');
+// eslint-disable-next-line new-cap
 const router = express.Router();
-const { register, login, forgotPassword } = require('../routes/authRoutes');
+const {
+  register,
+  login,
+  forgotPassword,
+} = require('../controllers/authController');
 
 router.post('/register', register);
 

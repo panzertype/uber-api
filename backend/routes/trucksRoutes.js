@@ -1,4 +1,5 @@
 const express = require('express');
+// eslint-disable-next-line new-cap
 const router = express.Router();
 const {
   getUserTrucks,
@@ -7,7 +8,7 @@ const {
   updateUserTruckById,
   deleteUserTruckById,
   assignUserTruckById,
-} = require('../routes/trucksRoutes');
+} = require('../controllers/trucksController');
 
 router.get('/', getUserTrucks);
 

@@ -1,4 +1,5 @@
 const express = require('express');
+// eslint-disable-next-line new-cap
 const router = express.Router();
 const {
   getUserLoads,
@@ -10,7 +11,7 @@ const {
   deleteUserLoadById,
   postUserLoadById,
   getUserLoadShippingInfoById,
-} = require('../routes/loadsRoutes');
+} = require('../controllers/loadsController');
 
 router.get('/', getUserLoads);
 
