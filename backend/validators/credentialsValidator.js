@@ -1,6 +1,6 @@
 const joi = require('joi');
 
-exports.credentialValidator = (data) => {
+exports.credentialsValidator = (data) => {
   const schema = joi.object({
     email: joi.string().email().required(),
     password: joi.string().required(),
