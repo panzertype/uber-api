@@ -11,6 +11,10 @@ const schema = new mongoose.Schema(
         type: String,
         required: true,
       },
+      password: {
+        type: String,
+        required: true,
+      },
     },
     {
       timestamps: {createdAt: 'created_date', updatedAt: false},
