@@ -80,8 +80,10 @@ const login = async (req, res) => {
       if (response) {
         res.status(200).json({jwt_token: genToken(user._id)});
       } else {
-        res.status(400).json({message: 'Invalid email or password'});
+        res.status(400).json({message: 'Invalid password'});
       }
+    } else {
+      res.status(400).json({message: 'User does not exists'});
     }
   } catch (err) {
     console.log(err);

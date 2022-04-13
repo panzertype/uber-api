@@ -5,7 +5,7 @@ exports.userValidator = (data) => {
     _id: joi.string().required(),
     role: joi.string().valid('SHIPPER', 'DRIVER').required(),
     email: joi.string().email().required(),
-    password: joi.string().required(),
+    password: joi.string().alphanum().required(),
     created_date: joi.date().timestamp().required(),
   });
 
