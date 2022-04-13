@@ -5,8 +5,9 @@ exports.userValidator = (data) => {
     _id: joi.string().required(),
     role: joi.string().valid('SHIPPER', 'DRIVER').required(),
     email: joi.string().email().required(),
+    password: joi.string().required(),
     created_date: joi.string().date().required(),
   });
 
-  return schema.validate(data);
+  return schema.validate(data, {abortEarly: false});
 };

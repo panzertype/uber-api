@@ -6,5 +6,5 @@ exports.credentialValidator = (data) => {
     password: joi.string().required(),
   });
 
-  return schema.validate(data);
+  return schema.validate(data, {abortEarly: false});
 };

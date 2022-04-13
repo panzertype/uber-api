@@ -7,5 +7,5 @@ exports.registrationCredentialsValidator = (data) => {
     role: joi.string().valid('SHIPPER', 'DRIVER').required(),
   });
 
-  return schema.validate(data);
+  return schema.validate(data, {abortEarly: false});
 };

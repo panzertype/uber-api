@@ -13,5 +13,5 @@ exports.truckValidator = (data) => {
     created_date: joi.string().date().required(),
   });
 
-  return schema.validate(data);
+  return schema.validate(data, {abortEarly: false});
 };
