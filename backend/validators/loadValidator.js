@@ -37,7 +37,7 @@ exports.loadValidator = (data) => {
         )
         .min(1)
         .required(),
-    created_date: joi.string().date().required(),
+    created_date: joi.date().timestamp().required(),
   });
 
   return schema.validate(data, {abortEarly: false});

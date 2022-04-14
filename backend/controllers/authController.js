@@ -1,12 +1,11 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-const User = require('../models/userModel');
+const User = require('../models/mongoose/userModel');
 const {
   registrationCredentialsValidator,
 } = require('../validators/registrationCredentialsValidator');
 const {credentialsValidator} = require('../validators/credentialsValidator');
 const {joiErrorHandler} = require('../utils/joiErrorHandler');
-const {userValidator} = require('../validators/userValidator');
 
 const genToken = (id) => {
   return jwt.sign({id}, process.env.JWT_SECRET, {
@@ -41,18 +40,8 @@ const register = async (req, res) => {
       password: hash,
     };
 
-    const {userError} = userValidator(newUser);
-    if (userError) {
-      const errorL = joiErrorHandler(userError);
-      if (errorL) {
-        return res.status(400).json(errorL);
-      } else {
-        return res.status(500).json({message: 'Internal server error'});
-      }
-    } else {
-      const user = new User(newUser);
-      await user.save();
-    }
+    const user = new User(newUser);
+    await user.save();
 
     res.status(200).json({message: 'Profile created successfully'});
   } catch (err) {

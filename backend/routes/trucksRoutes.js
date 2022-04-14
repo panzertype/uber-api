@@ -1,4 +1,5 @@
 const express = require('express');
+const Roles = require('../models/rolesModel');
 // eslint-disable-next-line new-cap
 const router = express.Router();
 const {
@@ -9,17 +10,23 @@ const {
   deleteUserTruckById,
   assignUserTruckById,
 } = require('../controllers/trucksController');
+const {protect} = require('../middleware/authMiddleware');
+const {accessFor} = require('../middleware/accessForMiddleware');
 
-router.get('/', getUserTrucks);
+router.get('/', [protect, accessFor(Roles.driver)], getUserTrucks);
 
-router.post('/', addUserTruck);
+router.post('/', [protect, accessFor(Roles.driver)], addUserTruck);
 
-router.get('/:id', getUserTruckById);
+router.get('/:id', [protect, accessFor(Roles.driver)], getUserTruckById);
 
-router.put('/:id', updateUserTruckById);
+router.put('/:id', [protect, accessFor(Roles.driver)], updateUserTruckById);
 
-router.delete('/:id', deleteUserTruckById);
+router.delete('/:id', [protect, accessFor(Roles.driver)], deleteUserTruckById);
 
-router.post('/:id/assign', assignUserTruckById);
+router.post(
+    '/:id/assign',
+    [protect, accessFor(Roles.driver)],
+    assignUserTruckById,
+);
 
 module.exports = router;

@@ -1,17 +1,16 @@
 const joi = require('joi');
 
-exports.truckValidator = (data) => {
-  const schema = joi.object({
-    _id: joi.string().required(),
-    created_by: joi.string().required(),
-    assigned_to: joi.string().required(),
+exports.truckValidator = (data, requiredFields = []) => {
+  let schema = joi.object({
+    created_by: joi.object(),
+    assigned_to: [joi.object(), joi.string().allow(null)],
     type: joi
         .string()
-        .valid('SPRINTER', 'SMALL STRAIGHT', 'LARGE STRAIGHT')
-        .required(),
-    status: joi.string().valid('OL', 'IS').required(),
-    created_date: joi.string().date().required(),
+        .valid('SPRINTER', 'SMALL STRAIGHT', 'LARGE STRAIGHT'),
+    status: [joi.string().valid('OL', 'IS'), joi.string().allow(null)],
   });
 
-  return schema.validate(data, {abortEarly: false});
+  schema = schema.fork(requiredFields, (field) => field.required());
+
+  return schema.validate(data, requiredFields, {abortEarly: false});
 };

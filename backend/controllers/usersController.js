@@ -1,4 +1,4 @@
-const User = require('../models/userModel');
+const User = require('../models/mongoose/userModel');
 const bcrypt = require('bcrypt');
 const {
   passwordChangeValidator,
@@ -18,7 +18,6 @@ const getProfileInfo = async (req, res) => {
     if (user) {
       res.status(200).json({user});
     } else {
-      console.log('ERROR 400: User does not exist');
       res.status(400).json({
         message: 'User does not exist',
       });
@@ -43,7 +42,6 @@ const deleteProfile = async (req, res) => {
       await user.remove();
       res.status(200).json({message: 'Profile deleted successfully'});
     } else {
-      console.log('ERROR 400: User does not exist');
       res.status(400).json({
         message: 'User does not exist',
       });
