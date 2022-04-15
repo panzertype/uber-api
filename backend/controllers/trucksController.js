@@ -106,6 +106,16 @@ const updateUserTruckById = async (req, res) => {
       });
     }
 
+    const {error} = truckValidator(req.body, ['type']);
+    if (error) {
+      const errorL = joiErrorHandler(error);
+      if (errorL) {
+        return res.status(400).json(errorL);
+      } else {
+        return res.status(500).json({message: 'Internal server error'});
+      }
+    }
+
     const truck = await Truck.findOne({
       created_by: req.user._id,
       _id: req.params.id,
@@ -119,7 +129,7 @@ const updateUserTruckById = async (req, res) => {
 
     if (truck) {
       truck.type = req.body.type;
-      truck.save();
+      await truck.save();
       res.status(200).json({
         message: 'Truck details changed successfully',
       });
@@ -183,20 +193,70 @@ const assignUserTruckById = async (req, res) => {
 
       if (
         oldAssignedTruck &&
+        oldAssignedTruck.assigned_to === truck.assigned_to
+      ) {
+        return res.status(400).json({message: 'Truck is already assigned'});
+      }
+
+      if (
+        oldAssignedTruck &&
         oldAssignedTruck.status !== TruckModel.status.on_load
       ) {
-        oldAssignedTruck.assigned_to = null;
-        oldAssignedTruck.status = null;
+        const updateTruck = {
+          assigned_to: null,
+          status: null,
+        };
+
+        const {error} = truckValidator(updateTruck, ['assigned_to', 'status']);
+
+        if (error) {
+          const errorL = joiErrorHandler(error);
+          if (errorL) {
+            return res.status(400).json(errorL);
+          } else {
+            return res.status(500).json({message: 'Internal server error'});
+          }
+        }
+
+        oldAssignedTruck.assigned_to = updateTruck.assigned_to;
+        oldAssignedTruck.status = updateTruck.status;
         await oldAssignedTruck.save();
       }
 
-      truck.assigned_to = req.user._id;
-      truck.status = TruckModel.status.in_service;
-      truck.save();
+      const updateTruck = {
+        assigned_to: req.user._id,
+        status: TruckModel.status.in_service,
+      };
+
+      const {error} = truckValidator(updateTruck, ['assigned_to', 'status']);
+      if (error) {
+        const errorL = joiErrorHandler(error);
+        if (errorL) {
+          return res.status(400).json(errorL);
+        } else {
+          return res.status(500).json({message: 'Internal server error'});
+        }
+      }
+
+      truck.assigned_to = updateTruck.assigned_to;
+      truck.status = updateTruck.status;
+
+      await truck.save();
       res.status(200).json({
-        message: 'Truck details changed successfully',
+        message: 'Truck assigned successfully',
       });
     } else {
+      const oldAssignedTruck = await Truck.findOne({
+        assigned_to: req.user._id,
+      });
+
+      if (
+        oldAssignedTruck &&
+        oldAssignedTruck.assigned_to.toString() === truck.assigned_to.toString()
+      ) {
+        return res.status(400).json({message: 'Truck is already assigned'});
+      }
+
       res.status(400).json({
         message: 'Truck does not exist',
       });
