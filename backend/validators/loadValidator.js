@@ -1,14 +1,44 @@
 const joi = require('joi');
+const Truck = require('../models/truckModel');
+const {canFit} = require('../utils/canFit');
 
-exports.loadValidator = (data) => {
-  const schema = joi.object({
-    _id: joi.string().required(),
-    creatd_by: joi.string().required(),
-    assigned_to: joi.string().required(),
-    status: joi
-        .string()
-        .valid('NEW', 'POSTED', 'ASSIGNED', 'SHIPPED')
-        .required(),
+exports.loadValidator = (data, requiredFields = []) => {
+  const dimensionsSchema = joi.object({
+    dimensions: joi.object({
+      width: joi.number().integer().required(),
+      length: joi.number().integer().required(),
+      height: joi.number().integer().required(),
+    }).required(),
+  }).unknown();
+
+  const dimensionV = dimensionsSchema.validate(data);
+
+  if (dimensionV.error) {
+    return dimensionV;
+  }
+
+  let fittable = false;
+  Object.values(Truck.dimensions).forEach((el) => {
+    if (canFit(data.dimensions, el)) {
+      fittable = true;
+    }
+  });
+  if (!fittable) {
+    const pseudoJoiError = {
+      error: {
+        details: [
+          {
+            message: `Exceeded max dimension limit`,
+          },
+        ],
+      },
+    };
+    return pseudoJoiError;
+  }
+  let schema = joi.object({
+    created_by: joi.object(),
+    assigned_to: [joi.object(), joi.string().allow(null)],
+    status: joi.string().valid('NEW', 'POSTED', 'ASSIGNED', 'SHIPPED'),
     state: joi
         .string()
         .valid(
@@ -16,29 +46,33 @@ exports.loadValidator = (data) => {
             'Arrived to Pick Up',
             'En route to delivery',
             'Arrived to delivery',
-        )
-        .required(),
-    name: joi.string().required(),
-    payload: joi.number().required(),
-    pickup_address: joi.string().required(),
-    delivery_address: joi.string().required(),
-    dimensions: joi.object({
-      width: joi.number().required(),
-      length: joi.number().required(),
-      height: joi.number().required(),
-    }).required(),
-    logs: joi
-        .array()
-        .items(
-            joi.object({
-              message: joi.string().required(),
-              time: joi.string().date().required(),
-            }),
-        )
+        ),
+    name: joi.string(),
+    payload: joi
+        .number()
+        .integer()
         .min(1)
-        .required(),
-    created_date: joi.date().timestamp().required(),
+        .max(Math.max(...Object.values(Truck.payload))),
+    pickup_address: joi.string(),
+    delivery_address: joi.string(),
+    dimensions: joi.object({
+      width: joi.number().integer().required(),
+      length: joi.number().integer().required(),
+      height: joi.number().integer().required(),
+    }),
+    logs: joi.array().items(
+        joi.object({
+          message: joi.string().required(),
+          time: joi.date().timestamp().required(),
+        }),
+    ),
+    created_date: joi.date().timestamp(),
   });
 
-  return schema.validate(data, {abortEarly: false});
+  schema = schema.fork(requiredFields, (field) => field.required());
+
+  return schema.validate(data, {
+    requiredFields: requiredFields,
+    abortEarly: false,
+  });
 };

@@ -36,7 +36,7 @@ const MainSchema = new mongoose.Schema(
       },
       assigned_to: {
         type: mongoose.Schema.Types.ObjectId,
-        required: true,
+        default: null,
         ref: 'User',
       },
       status: {
@@ -56,8 +56,9 @@ const MainSchema = new mongoose.Schema(
           Load.state.picking_up,
           Load.state.delivering,
           Load.state.delivered,
+          null,
         ],
-        required: true,
+        default: null,
       },
       payload: {
         type: Number,
@@ -77,7 +78,7 @@ const MainSchema = new mongoose.Schema(
       },
       logs: {
         type: [logSchema],
-        required: true,
+        default: [],
       },
     },
     {

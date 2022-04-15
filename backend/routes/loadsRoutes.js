@@ -1,4 +1,5 @@
 const express = require('express');
+const Roles = require('../models/rolesModel');
 // eslint-disable-next-line new-cap
 const router = express.Router();
 const {
@@ -12,23 +13,33 @@ const {
   postUserLoadById,
   getUserLoadShippingInfoById,
 } = require('../controllers/loadsController');
+const {protect} = require('../middleware/authMiddleware');
+const {accessFor} = require('../middleware/accessForMiddleware');
 
-router.get('/', getUserLoads);
+router.get('/', [protect, accessFor(Roles.shipper)], getUserLoads);
 
-router.post('/', addUserLoad);
+router.post('/', [protect, accessFor(Roles.shipper)], addUserLoad);
 
-router.get('/active', getUserActiveLoad);
+router.get('/active', [protect, accessFor(Roles.shipper)], getUserActiveLoad);
 
-router.patch('/active/state', iterateNextLoadState);
+router.patch(
+    '/active/state',
+    [protect, accessFor(Roles.shipper)],
+    iterateNextLoadState,
+);
 
-router.get('/:id', getUserLoadById);
+router.get('/:id', [protect, accessFor(Roles.shipper)], getUserLoadById);
 
-router.put('/:id', updateUserLoadById);
+router.put('/:id', [protect, accessFor(Roles.shipper)], updateUserLoadById);
 
-router.delete('/:id', deleteUserLoadById);
+router.delete('/:id', [protect, accessFor(Roles.shipper)], deleteUserLoadById);
 
-router.post('/:id/post', postUserLoadById);
+router.post('/:id/post', [protect, accessFor(Roles.shipper)], postUserLoadById);
 
-router.get('/:id/shipping_info', getUserLoadShippingInfoById);
+router.get(
+    '/:id/shipping_info',
+    [protect, accessFor(Roles.shipper)],
+    getUserLoadShippingInfoById,
+);
 
 module.exports = router;
