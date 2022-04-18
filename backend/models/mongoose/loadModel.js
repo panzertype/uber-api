@@ -14,7 +14,7 @@ const dimensionsSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-});
+}, {_id: false});
 
 const logSchema = new mongoose.Schema({
   message: {
@@ -25,7 +25,7 @@ const logSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-});
+}, {_id: false});
 
 const MainSchema = new mongoose.Schema(
     {

@@ -20,11 +20,11 @@ router.get('/', [protect, accessFor(Roles.shipper)], getUserLoads);
 
 router.post('/', [protect, accessFor(Roles.shipper)], addUserLoad);
 
-router.get('/active', [protect, accessFor(Roles.shipper)], getUserActiveLoad);
+router.get('/active', [protect, accessFor(Roles.driver)], getUserActiveLoad);
 
 router.patch(
     '/active/state',
-    [protect, accessFor(Roles.shipper)],
+    [protect, accessFor(Roles.driver)],
     iterateNextLoadState,
 );
 

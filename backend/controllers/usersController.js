@@ -1,4 +1,9 @@
 const User = require('../models/mongoose/userModel');
+const Roles = require('../models/rolesModel');
+const Truck = require('../models/mongoose/truckModel');
+const Load = require('../models/mongoose/loadModel');
+const LoadModel = require('../models/loadModel');
+const TruckModel = require('../models/truckModel');
 const bcrypt = require('bcrypt');
 const {
   passwordChangeValidator,
@@ -39,6 +44,23 @@ const deleteProfile = async (req, res) => {
     const user = await User.findById(req.user._id);
 
     if (user) {
+      if (user.role === Roles.driver) {
+        const truck = Truck.findOne({status: TruckModel.status.on_load});
+        if (truck) {
+          return res.status(400).json({message: 'You can not do it now'});
+        }
+      } else if (user.role === Roles.shipper) {
+        const load = Load.findOne({
+          $or: [
+            {status: LoadModel.status.posted},
+            {status: LoadModel.status.assigned},
+          ],
+        });
+        if (load) {
+          return res.status(400).json({message: 'You can not do it now'});
+        }
+      }
+
       await user.remove();
       res.status(200).json({message: 'Profile deleted successfully'});
     } else {

@@ -121,13 +121,17 @@ const updateUserTruckById = async (req, res) => {
       _id: req.params.id,
     });
 
-    if (truck.type === req.body.type) {
-      return res.status(400).json({
-        message: 'Use different type',
-      });
-    }
-
     if (truck) {
+      if (truck.status === TruckModel.status.on_load) {
+        return res.status(400).json({message: 'You can not do it now'});
+      }
+
+      if (truck.type === req.body.type) {
+        return res.status(400).json({
+          message: 'Use different type',
+        });
+      }
+
       truck.type = req.body.type;
       await truck.save();
       res.status(200).json({
@@ -155,6 +159,10 @@ const deleteUserTruckById = async (req, res) => {
     const truck = await Truck.findById(req.params.id);
 
     if (truck) {
+      if (truck.status === TruckModel.status.on_load) {
+        return res.status(400).json({message: 'You can not do it now'});
+      }
+
       await truck.remove();
       res.status(200).json({message: 'Truck deleted successfully'});
     } else {
@@ -200,7 +208,7 @@ const assignUserTruckById = async (req, res) => {
 
       if (
         oldAssignedTruck &&
-        oldAssignedTruck.status !== TruckModel.status.on_load
+        oldAssignedTruck.status === TruckModel.status.in_service
       ) {
         const updateTruck = {
           assigned_to: null,
@@ -221,6 +229,11 @@ const assignUserTruckById = async (req, res) => {
         oldAssignedTruck.assigned_to = updateTruck.assigned_to;
         oldAssignedTruck.status = updateTruck.status;
         await oldAssignedTruck.save();
+      } else if (
+        oldAssignedTruck &&
+        oldAssignedTruck.status === TruckModel.status.on_load
+      ) {
+        return res.status(400).json({message: 'You can not do it now'});
       }
 
       const updateTruck = {

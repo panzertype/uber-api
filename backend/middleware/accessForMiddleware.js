@@ -1,6 +1,9 @@
 const accessFor = (role) => {
   return (req, res, next) => {
     try {
+      if (!req.user) {
+        return res.status(401).json({message: 'Not authorized'});
+      }
       if (req.user.role === role) {
         next();
       } else {

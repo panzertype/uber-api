@@ -80,10 +80,6 @@ const login = async (req, res) => {
   }
 };
 
-// const forgotPassword = (req, res) => {
-//   res.status(200).json({message: 'Success'});
-// };
-
 module.exports = {
   register,
   login,

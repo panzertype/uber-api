@@ -3,42 +3,45 @@ const Truck = require('../models/truckModel');
 const {canFit} = require('../utils/canFit');
 
 exports.loadValidator = (data, requiredFields = []) => {
-  const dimensionsSchema = joi.object({
-    dimensions: joi.object({
-      width: joi.number().integer().required(),
-      length: joi.number().integer().required(),
-      height: joi.number().integer().required(),
-    }).required(),
-  }).unknown();
+  if (requiredFields.some((el) => el === 'dimensions')) {
+    const dimensionsSchema = joi.object({
+      dimensions: joi.object({
+        width: joi.number().integer().required(),
+        length: joi.number().integer().required(),
+        height: joi.number().integer().required(),
+      }).required(),
+    }).unknown();
 
-  const dimensionV = dimensionsSchema.validate(data);
+    const dimensionV = dimensionsSchema.validate(data);
 
-  if (dimensionV.error) {
-    return dimensionV;
-  }
-
-  let fittable = false;
-  Object.values(Truck.dimensions).forEach((el) => {
-    if (canFit(data.dimensions, el)) {
-      fittable = true;
+    if (dimensionV.error) {
+      return dimensionV;
     }
-  });
-  if (!fittable) {
-    const pseudoJoiError = {
-      error: {
-        details: [
-          {
-            message: `Exceeded max dimension limit`,
-          },
-        ],
-      },
-    };
-    return pseudoJoiError;
+
+    let fittable = false;
+    Object.values(Truck.dimensions).forEach((el) => {
+      if (canFit(data.dimensions, el)) {
+        fittable = true;
+      }
+    });
+    if (!fittable) {
+      const pseudoJoiError = {
+        error: {
+          details: [
+            {
+              message: `Exceeded max dimension limit`,
+            },
+          ],
+        },
+      };
+      return pseudoJoiError;
+    }
   }
+
   let schema = joi.object({
     created_by: joi.object(),
     assigned_to: [joi.object(), joi.string().allow(null)],
-    status: joi.string().valid('NEW', 'POSTED', 'ASSIGNED', 'SHIPPED'),
+    status: joi.string().valid('NEW', 'POSTED', 'ASSIGNED', 'SHIPPED', null),
     state: joi
         .string()
         .valid(
