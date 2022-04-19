@@ -125,7 +125,10 @@ const getUserActiveLoad = async (req, res) => {
       });
     }
 
-    const load = await Load.findOne({assigned_to: req.user._id}).select('-__v');
+    const load = await Load.findOne({
+      assigned_to: req.user._id,
+      status: loadModel.status.assigned,
+    }).select('-__v');
 
     if (load) {
       res.status(200).json({load});
@@ -328,6 +331,18 @@ const postUserLoadById = async (req, res) => {
       _id: req.params.id,
     });
 
+    if (!load) {
+      return res.status(400).json({
+        message: 'Load does not exist',
+      });
+    }
+
+    if (load.status !== loadModel.status.new) {
+      return res.status(400).json({
+        message: 'Load already posted',
+      });
+    }
+
     const maxPayload = Math.max(...Object.values(truckModel.payload));
     if (load.payload > maxPayload) {
       return res
@@ -339,7 +354,10 @@ const postUserLoadById = async (req, res) => {
     const truckModels = Object.keys(truckModel.dimensions);
 
     for (const truck of truckModels) {
-      if (canFit(load.dimensions, truckModel.dimensions[truck])) {
+      if (
+        canFit(load.dimensions, truckModel.dimensions[truck]) &&
+        load.payload <= truckModel.payload[truck]
+      ) {
         trucksThatCanFit.push(truckModel.type[truck]);
       }
     }
