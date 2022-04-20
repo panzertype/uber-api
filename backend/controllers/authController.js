@@ -43,6 +43,7 @@ const register = async (req, res) => {
     const user = new User(newUser);
     await user.save();
 
+    console.log('Profile created successfully');
     res.status(200).json({message: 'Profile created successfully'});
   } catch (err) {
     console.log(err);

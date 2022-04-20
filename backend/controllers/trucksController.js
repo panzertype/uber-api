@@ -45,7 +45,7 @@ const addUserTruck = async (req, res) => {
     } else {
       const truck = new Truck(newTruck);
       await truck.save();
-
+      console.log('Truck created successfully');
       res.status(200).json({message: 'Truck created successfully'});
     }
   } catch (err) {
@@ -134,6 +134,7 @@ const updateUserTruckById = async (req, res) => {
 
       truck.type = req.body.type;
       await truck.save();
+      console.log('Truck details changed successfully');
       res.status(200).json({
         message: 'Truck details changed successfully',
       });
@@ -164,6 +165,7 @@ const deleteUserTruckById = async (req, res) => {
       }
 
       await truck.remove();
+      console.log('Truck deleted successfully');
       res.status(200).json({message: 'Truck deleted successfully'});
     } else {
       res.status(400).json({
@@ -255,6 +257,7 @@ const assignUserTruckById = async (req, res) => {
       truck.status = updateTruck.status;
 
       await truck.save();
+      console.log('Truck assigned successfully');
       res.status(200).json({
         message: 'Truck assigned successfully',
       });

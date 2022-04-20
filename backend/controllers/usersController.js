@@ -62,6 +62,7 @@ const deleteProfile = async (req, res) => {
       }
 
       await user.remove();
+      console.log('Profile deleted successfully');
       res.status(200).json({message: 'Profile deleted successfully'});
     } else {
       res.status(400).json({
@@ -100,6 +101,7 @@ const changePassword = async (req, res) => {
         const hash = await bcrypt.hash(newPassword, 10);
         user.password = hash;
         await user.save();
+        console.log('Password changed successfully');
         res.status(200).json({message: 'Password changed successfully'});
       } else {
         res.status(400).json({message: 'Incorrect password'});

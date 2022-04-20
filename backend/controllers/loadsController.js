@@ -110,6 +110,7 @@ const addUserLoad = async (req, res) => {
     const load = new Load(newLoad);
     await load.save();
 
+    console.log('Load created successfully');
     res.status(200).json({message: 'Load created successfully'});
   } catch (err) {
     console.log(err);
@@ -179,6 +180,7 @@ const iterateNextLoadState = async (req, res) => {
       truck.status = truckModel.status.in_service;
       await truck.save();
 
+      console.log('Load state changed successfully');
       res
           .status(200)
           .json({message: `Load state changed to ${states[stage + 1]}`});
@@ -271,6 +273,7 @@ const updateUserLoadById = async (req, res) => {
       load.dimensions = req.body.dimensions;
 
       await load.save();
+      console.log('Load details changed successfully');
       res.status(200).json({
         message: 'Load details changed successfully',
       });
@@ -300,6 +303,7 @@ const deleteUserLoadById = async (req, res) => {
         return res.status(400).json({message: 'You can not do it now'});
       }
       await load.remove();
+      console.log('Load deleted successfully');
       res.status(200).json({message: 'Load deleted successfully'});
     } else {
       res.status(400).json({
@@ -394,6 +398,7 @@ const postUserLoadById = async (req, res) => {
       await load.save();
       await truck.save();
 
+      console.log('Load posted successfully');
       res
           .status(200)
           .json({message: 'Load posted successfully', driver_found: true});
