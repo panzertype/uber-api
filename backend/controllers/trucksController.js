@@ -214,7 +214,7 @@ const assignUserTruckById = async (req, res) => {
       ) {
         const updateTruck = {
           assigned_to: null,
-          status: null,
+          status: Truck.status.in_service,
         };
 
         const {error} = truckValidator(updateTruck, ['assigned_to', 'status']);

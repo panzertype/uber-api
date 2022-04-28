@@ -45,12 +45,17 @@ const deleteProfile = async (req, res) => {
 
     if (user) {
       if (user.role === Roles.driver) {
-        const truck = Truck.findOne({status: TruckModel.status.on_load});
+        const truck = await Truck.findOne({
+          created_by: req.user._id,
+          status: TruckModel.status.on_load,
+        });
         if (truck) {
           return res.status(400).json({message: 'You can not do it now'});
         }
+        await Truck.deleteMany({created_by: req.user._id});
       } else if (user.role === Roles.shipper) {
-        const load = Load.findOne({
+        const load = await Load.findOne({
+          created_by: req.user._id,
           $or: [
             {status: LoadModel.status.posted},
             {status: LoadModel.status.assigned},
@@ -59,6 +64,7 @@ const deleteProfile = async (req, res) => {
         if (load) {
           return res.status(400).json({message: 'You can not do it now'});
         }
+        await Load.deleteMany({created_by: req.user._id});
       }
 
       await user.remove();

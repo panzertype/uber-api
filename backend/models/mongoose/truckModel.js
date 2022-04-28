@@ -22,8 +22,8 @@ const schema = new mongoose.Schema(
       },
       status: {
         type: String,
-        enum: [Truck.status.on_load, Truck.status.in_service, null],
-        default: null,
+        enum: [Truck.status.on_load, Truck.status.in_service],
+        default: Truck.status.in_service,
       },
     },
     {
